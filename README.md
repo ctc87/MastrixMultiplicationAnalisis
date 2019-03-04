@@ -1,9 +1,9 @@
 # MastrixMultiplicationAnalisis
 # Assignment structure
-
-This directory is organised as follows:
-      .
-      ├── bib          # Assignment bibliography
-      ├── report       # LaTeX template for the report
-      ├── slides       # LaTeX Beamer template for the slides
-      ├── src          # Source code
+<br/>
+This directory is organised as follows:<br/>
+      .<br/>
+      ├── bib          # Assignment bibliography <br/>
+      ├── report       # LaTeX template for the report<br/>
+      ├── slides       # LaTeX Beamer template for the slides<br/>
+      ├── src          # Source code<br/>
