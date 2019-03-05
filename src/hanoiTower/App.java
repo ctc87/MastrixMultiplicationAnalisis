@@ -1,5 +1,17 @@
 package hanoiTower;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Random;
+import java.util.Scanner;
+
+import exceptions.SintaxError;
 import timer.Timer;
 
 /**
@@ -28,44 +40,99 @@ public class App {
 	 * Cyclic parameter constant.
 	 */
 	static final String CYCLIC_PARAMETER = "--cyclic";
-	
+	static final float MIN = -10000;
+	static final float MAX = 10000;
+	static String file = "matrix.m";
+	static int size = 10;
 	/**
 	 * Main method initialize the problem and execute the solver.
 	 * @param args
+	 * @throws SintaxError 
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
-	public static void main(String[] args) {
-		Timer.start();
-		int[][] matrix = {
-			    { 1,2 },
-			    { 6,7 }
-			};
-		int[][] matrix2 = {
-			    { 1,1 },
-			    { 1,1 }
-			};
-	    int[][] i = Strassen.StrassenMultiply(matrix, matrix2);
-	   Strassen.printMatrix(i);
+	public static void main(String[] args) throws FileNotFoundException, IOException, SintaxError {
+//		Matrix m1;
+//		Matrix m2;
+		menu();
+		//file = args[0];
+//		try {
+//			ArrayList<ArrayList<String>> matrixs = readInputMatrix(args[2]);
+//			m1 = new Matrix(matrixs.get(0));
+//			
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} catch (SintaxError e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		Timer.start();
+//	   Strassen.printMatrix(i);
 //		if(args.length > 3 || args.length < 2 || !isInt(args[0]) || !itsBool(args[1])) {
 //			throw new RuntimeException(USAGE);
 //		} else {
-//			int N = Integer.parseInt(args[0]);
-//			boolean debug = Integer.parseInt(args[1]) == 1 ;
-//			Hanoi instance;
-//			if(args.length < 3) {
-//				instance = new Hanoi(N);
-//			} else {
-//				if(!args[2].equals(CYCLIC_PARAMETER)) {
-//					throw new RuntimeException(USAGE);
-//				} else {
-//					instance = new CyclicHanoi(N);
-//				}
-//			}
-//			instance.solve(N, debug);
-//			if(!debug)
-//				System.out.println("Number of moves for N=" + N + " -> " + instance.numberOfMoves);
+//			
 //		}
-		//System.out.println("N:" + args[0] + "  Time execution:" + Timer.stop() +"sec");
 	}
+	
+	public static ArrayList<ArrayList<String>> readInputMatrix(String fileName) throws FileNotFoundException, IOException, SintaxError {
+		boolean secondMatrix = false;
+		
+		ArrayList<ArrayList<String>> TwoMatrixStringArray = new ArrayList<ArrayList<String>>();
+		TwoMatrixStringArray.add(new ArrayList<String>());
+		TwoMatrixStringArray.add(new ArrayList<String>());
+		ArrayList<String> matrixString = new ArrayList<String>();
+		String str;
+		FileReader f = new FileReader(fileName);
+		BufferedReader b = new BufferedReader(f);
+		while ((str = b.readLine()) != null) {
+			matrixString.add(str);
+		}
+		b.close();
+		int lineNumber = 0;
+		int matrix = 0;
+		for (String line:matrixString) {
+			lineNumber++;
+			if(isNotEmptyLine(line) && isNotComment(line) && !itsBlockOpen(line) && itsValidLine(line)) {
+				TwoMatrixStringArray.get(matrix).add(line);
+			} else if(itsBlockClousre(line) && !secondMatrix){
+				secondMatrix = true;
+				matrix++;
+			} else {
+				if(isNotEmptyLine(line) && isNotComment(line) && itsBlockOpenOrClousre(line))
+					throw new SintaxError(lineNumber, "Not valid characters", fileName);
+			}
+		}
+		for(String stssr:TwoMatrixStringArray.get(0)) {
+			System.out.println("# " + stssr);
+		}
+		return TwoMatrixStringArray;
+	}
+	
+	
+	private static boolean isNotEmptyLine(String str) {
+		return !str.trim().isEmpty();
+	}
+
+	private static boolean isNotComment(String str) {
+		return str.charAt(0) != '#';
+	}
+	
+	private static boolean itsValidLine(String str) {
+		String number = "-?\\d*\\.{0,1}\\d+";
+		String stringPattern = "\\{(\\s)*(" + number + "\\,?(\\s)*)*" + number +"(\\s)*\\}(\\s)*\\,";
+		return java.util.regex.Pattern.matches(stringPattern, str.trim());
+	}	
+	private static boolean itsBlockOpenOrClousre(String str) {
+		return (itsBlockClousre(str) && itsBlockOpen(str));
+	}
+	private static boolean itsBlockOpen(String str) {
+		return java.util.regex.Pattern.matches("\\{", str.trim());
+	}
+	private static boolean itsBlockClousre(String str) {
+		return java.util.regex.Pattern.matches("\\}", str.trim());
+	}
+	
 	
 	/**
 	 * Checks if String its a integer.
@@ -96,4 +163,101 @@ public class App {
 			return false;
 		}
 	}
+	
+	
+	static void genarteMatrixFile() {
+		
+			PrintWriter writer;
+			try {
+				writer = new PrintWriter(file, "UTF-8");
+				writer.print(
+						"# Admite comentarios y líneas en blanco.\r\n" + 
+						"# matrix 1\n" +
+						 returnStringMatrix() + 
+						 "# matrix2\n" +
+						 returnStringMatrix()
+				);
+				
+				writer.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+	
+	static String returnStringMatrix() {
+		String matrix = "{\n";
+		for(int i = 0; i < size; i++) {
+			matrix += "{";
+			for(int j = 0; j < size; j++) {
+				matrix += randFloat();
+				if(j < size-1) {
+					matrix += ",";
+				}
+			}
+			matrix += "}";
+			if(i < size-1)  {
+				matrix +=",\n";
+			}	
+		}
+		matrix += "\n}\n";
+		return matrix;
+	}
+	
+	public static float randFloat() {
+	    Random rand = new Random();
+	    float result = rand.nextFloat() * (MAX - MIN) + MIN;
+	    return result;
+	}
+	
+	public static void menu() throws FileNotFoundException, IOException, SintaxError {
+		Scanner sn = new Scanner(System.in);
+        boolean salir = false;
+        int opcion; //Guardaremos la opcion del usuario
+ 
+        while (!salir) {
+ 
+            System.out.println("1. Crear matriz de tamaño " + size + " en " + file + " .");
+            System.out.println("2. Probar matriz de " + file + " .");
+            System.out.println("3. Opcion 3");
+            System.out.println("4. Salir");
+ 
+            try {
+ 
+                System.out.println("Escribe una de las opciones");
+                opcion = sn.nextInt();
+ 
+                switch (opcion) {
+                    case 1:
+                        System.out.println("Generando la matriz... espere.");
+                		genarteMatrixFile();
+                        System.out.println("Matriz generada de " + size + "x" + size + " en "+ file + " .");
+                        break;
+                    case 2:
+                        System.out.println("Iniciando las pruebas con " + file);
+                        ArrayList<ArrayList<String>> matrixs = readInputMatrix(file);
+            			Matrix m1 = new Matrix(matrixs.get(0));
+            			Matrix m2 = new Matrix(matrixs.get(1));
+                        Matrix mr = Strassen.StrassenMultiply(m1,m2);
+                        mr.display();
+                        break;
+                    case 3:
+                        System.out.println("Has seleccionado la opcion 3");
+                        break;
+                    case 4:
+                        salir = true;
+                        break;
+                    default:
+                        System.out.println("Solo números entre 1 y 4");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Debes insertar un número");
+                sn.next();
+            }
+        }
+	}
+	
 }
