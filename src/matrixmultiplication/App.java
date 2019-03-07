@@ -1,4 +1,4 @@
-package hanoiTower;
+package matrixmultiplication;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -52,27 +52,7 @@ public class App {
 	 * @throws FileNotFoundException 
 	 */
 	public static void main(String[] args) throws FileNotFoundException, IOException, SintaxError {
-//		Matrix m1;
-//		Matrix m2;
-
 		menu();
-		//file = args[0];
-//		try {
-//			ArrayList<ArrayList<String>> matrixs = readInputMatrix(args[2]);
-//			m1 = new Matrix(matrixs.get(0));
-//			
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} catch (SintaxError e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	   Strassen.printMatrix(i);
-//		if(args.length > 3 || args.length < 2 || !isInt(args[0]) || !itsBool(args[1])) {
-//			throw new RuntimeException(USAGE);
-//		} else {
-//			
-//		}
 	}
 	
 	public static ArrayList<ArrayList<String>> readInputMatrix(String fileName) throws FileNotFoundException, IOException, SintaxError {
