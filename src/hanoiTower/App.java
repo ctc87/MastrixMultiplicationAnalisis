@@ -43,7 +43,7 @@ public class App {
 	static final float MIN = -10000;
 	static final float MAX = 10000;
 	static String file = "matrix.m";
-	static int size = 10;
+	static int size = 500;
 	/**
 	 * Main method initialize the problem and execute the solver.
 	 * @param args
@@ -54,6 +54,7 @@ public class App {
 	public static void main(String[] args) throws FileNotFoundException, IOException, SintaxError {
 //		Matrix m1;
 //		Matrix m2;
+
 		menu();
 		//file = args[0];
 //		try {
@@ -66,7 +67,6 @@ public class App {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-//		Timer.start();
 //	   Strassen.printMatrix(i);
 //		if(args.length > 3 || args.length < 2 || !isInt(args[0]) || !itsBool(args[1])) {
 //			throw new RuntimeException(USAGE);
@@ -103,9 +103,7 @@ public class App {
 					throw new SintaxError(lineNumber, "Not valid characters", fileName);
 			}
 		}
-		for(String stssr:TwoMatrixStringArray.get(0)) {
-			System.out.println("# " + stssr);
-		}
+	
 		return TwoMatrixStringArray;
 	}
 	
@@ -170,13 +168,12 @@ public class App {
 			PrintWriter writer;
 			try {
 				writer = new PrintWriter(file, "UTF-8");
-				writer.print(
-						"# Admite comentarios y líneas en blanco.\r\n" + 
-						"# matrix 1\n" +
-						 returnStringMatrix() + 
-						 "# matrix2\n" +
-						 returnStringMatrix()
-				);
+				writer.println("# Admite comentarios y líneas en blanco.");
+				writer.println("# matrix 1");
+						 StringMatrix(writer); 
+			    writer.println("# matrix2");
+						 StringMatrix(writer);
+				
 				
 				writer.close();
 			} catch (FileNotFoundException e) {
@@ -188,23 +185,26 @@ public class App {
 			}
 	}
 	
-	static String returnStringMatrix() {
-		String matrix = "{\n";
+	static void StringMatrix(PrintWriter writer) {
+		writer.println("{");
 		for(int i = 0; i < size; i++) {
-			matrix += "{";
+			writer.print("{");
 			for(int j = 0; j < size; j++) {
-				matrix += randFloat();
+				writer.print(randFloat());
 				if(j < size-1) {
-					matrix += ",";
+					writer.print(",");
 				}
 			}
-			matrix += "}";
+			
 			if(i < size-1)  {
-				matrix +=",\n";
-			}	
+				writer.println("},");
+			} else  {
+
+				writer.println("},");
+			}
 		}
-		matrix += "\n}\n";
-		return matrix;
+		writer.println();
+		writer.println("}");
 	}
 	
 	public static float randFloat() {
@@ -221,8 +221,8 @@ public class App {
         while (!salir) {
  
             System.out.println("1. Crear matriz de tamaño " + size + " en " + file + " .");
-            System.out.println("2. Probar matriz de " + file + " .");
-            System.out.println("3. Opcion 3");
+            System.out.println("2. Probar producto de las matrizes de " + file + " Strassen.");
+            System.out.println("3. Probar producto de las matrizes de " + file + " Iteratívo.");
             System.out.println("4. Salir");
  
             try {
@@ -241,11 +241,22 @@ public class App {
                         ArrayList<ArrayList<String>> matrixs = readInputMatrix(file);
             			Matrix m1 = new Matrix(matrixs.get(0));
             			Matrix m2 = new Matrix(matrixs.get(1));
-                        Matrix mr = Strassen.StrassenMultiply(m1,m2);
-                        mr.display();
+            			Timer.start();
+                        Matrix mr = Operations.StrassenMultiply(m1,m2);
+                        if(size <= 50)
+                        	mr.display();
+                		System.out.println("STOP " + Timer.stop() + "SEG");
                         break;
                     case 3:
-                        System.out.println("Has seleccionado la opcion 3");
+                        System.out.println("Iniciando las pruebas con " + file);
+                        ArrayList<ArrayList<String>> matrixx = readInputMatrix(file);
+            			Matrix m11 = new Matrix(matrixx.get(0));
+            			Matrix m22 = new Matrix(matrixx.get(1));
+            			Timer.start();
+                        Matrix mrr = Operations.StrassenMultiply(m11,m22);
+                        if(size <= 50)
+                        	mrr.display();
+                		System.out.println("STOP " + Timer.stop() + "SEG");
                         break;
                     case 4:
                         salir = true;

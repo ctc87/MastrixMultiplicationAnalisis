@@ -15,9 +15,8 @@ public class Matrix {
     	m = createMatrixFromString(matrix);
     	cols = m.get(0).size();
     	rows = m.size(); 
-    	//squareIt();
+    	squareIt();
     }
-
     
     public Matrix(int size) {
     	cols = size;
@@ -29,19 +28,14 @@ public class Matrix {
 				m.get(i).add(null);
 			}
 		}
-    	display();
-    	
     }
     
     public Double pos(int i, int j) {
     	return m.get(i).get(j);
     }
     
-    public Double setPos(int i, int j, Double value) {
-    	Double a =  m.get(i).set(j, value);
-    	display();
-    	System.out.println("\n");
-    	return a;
+    public void setPos(int i, int j, Double value) {
+    	m.get(i).set(j,value);
     }
     
     public  ArrayList<ArrayList<Double>> createMatrixFromString(ArrayList<String> matrix) {
@@ -49,7 +43,6 @@ public class Matrix {
     	for(String line: matrix){
     		numberMatrix.add(createArray(line));
     	} 
-    	
 		return numberMatrix;
     }
     
@@ -77,8 +70,19 @@ public class Matrix {
     				completeCol(i);
     			}
     			cols = rows;
-    		}
-    		
+    		}	
+    	}
+    	pot2Matrix();
+    }
+    
+    void pot2Matrix() {
+    	while(log2(cols) % 1 != 0.0){
+    		m.add(emptyRow());
+			rows++;
+			for(int i =0; i < rows; i++) {
+				completeCol(i);
+			}
+			cols = rows;
     	}
     }
     
@@ -99,6 +103,7 @@ public class Matrix {
     public boolean isSquare() {
         return rows == cols;
     }
+    
 
     public void display() {
         for (int row = 0; row < rows; ++row) {
@@ -115,6 +120,10 @@ public class Matrix {
             System.out.println();
         }
     }
+
+	 public static double log2(double d) {
+	      return Math.log(d)/Math.log(2.0);
+	   }
     
     // Subtracting 2 matrices
     public static Matrix subMatrix(Matrix a, Matrix b) {
@@ -122,7 +131,7 @@ public class Matrix {
         Matrix res = new Matrix(n);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                res.setPos(i, j, a.pos(i, j) - b.pos(i, j));
+                res.setPos(i, j, (a.pos(i, j) - b.pos(i, j)));
             }
         }
         return res;
@@ -146,11 +155,12 @@ public class Matrix {
     
  // Adding 2 matrices
     public static Matrix addMatrix(Matrix a, Matrix b) {
+
         int n = a.cols;
         Matrix res = new Matrix(n);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-            	 res.setPos(i, j, a.pos(i, j) + b.pos(i, j));
+            	 res.setPos(i, j, (a.pos(i, j) + b.pos(i, j)));
             }
         }
         return res;
