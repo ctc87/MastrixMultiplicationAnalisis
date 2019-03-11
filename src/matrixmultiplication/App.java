@@ -20,9 +20,8 @@ import timer.Timer;
  * 
  * @author Carlos Troyano Carmona
  * @version 1.0
- * @date 1 mar. 2017
- * @see Hanoi
- * @see CyclicHanoi
+ * @date 6 mar. 2018
+ * @see Matrix
  */
 public class App {
 	
@@ -30,22 +29,19 @@ public class App {
 	 * Usage program constant.
 	 */
 	static final String USAGE = "\nError the usage its: \n" +
-			  "java hanoi_tower num_disks debug \n" + 
-			  "num_disks: The N of the disk number in the instance.\n" + 
-			  "debug: if the value its 1 the problems prints the solution step by step.\n" +
-			  "If the value its 0 the problems only prints the total number of the steps to solve it\n" + 
-			  "--cyclic: solve with cyclic solution.";
+			  "java APP fileName  \n" + 
+			  "filename: Name of the file to get matrix or to create matrix.";
 	
 	/**
 	 * Cyclic parameter constant.
 	 */
 	static final String CYCLIC_PARAMETER = "--cyclic";
-	static final float MIN = -10000;
-	static final float MAX = 10000;
+	static final float MIN = -1000;
+	static final float MAX = 1000;
 	static String file = "matrix.m";
-	static int size = 500;
+	static int size = 10;
 	/**
-	 * Main method initialize the problem and execute the solver.
+	 * Main method initialize the problem and execute the menú.
 	 * @param args
 	 * @throws SintaxError 
 	 * @throws IOException 
@@ -55,6 +51,14 @@ public class App {
 		menu();
 	}
 	
+	/**
+	 * Read matrix from file to create data struct.
+	 * @param fileName
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws SintaxError
+	 */
 	public static ArrayList<ArrayList<String>> readInputMatrix(String fileName) throws FileNotFoundException, IOException, SintaxError {
 		boolean secondMatrix = false;
 		
@@ -96,6 +100,11 @@ public class App {
 		return str.charAt(0) != '#';
 	}
 	
+	/**
+	 * Parse the line of file to see if the line its a valid line to create matrix.
+	 * @param str
+	 * @return
+	 */
 	private static boolean itsValidLine(String str) {
 		String number = "-?\\d*\\.{0,1}\\d+";
 		String stringPattern = "\\{(\\s)*(" + number + "\\,?(\\s)*)*" + number +"(\\s)*\\}(\\s)*\\,";
@@ -143,6 +152,9 @@ public class App {
 	}
 	
 	
+	/**
+	 * Generate matrix in file of the filename variable.
+	 */
 	static void genarteMatrixFile() {
 		
 			PrintWriter writer;
@@ -165,6 +177,10 @@ public class App {
 			}
 	}
 	
+	/**
+	 * Create string matrix.
+	 * @param writer
+	 */
 	static void StringMatrix(PrintWriter writer) {
 		writer.println("{");
 		for(int i = 0; i < size; i++) {
@@ -187,12 +203,22 @@ public class App {
 		writer.println("}");
 	}
 	
+	/**
+	 * Get random float number.
+	 * @return
+	 */
 	public static float randFloat() {
 	    Random rand = new Random();
 	    float result = rand.nextFloat() * (MAX - MIN) + MIN;
 	    return result;
 	}
 	
+	/**
+	 * Menu uf the program options to interact with the program.
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws SintaxError
+	 */
 	public static void menu() throws FileNotFoundException, IOException, SintaxError {
 		Scanner sn = new Scanner(System.in);
         boolean salir = false;
@@ -203,7 +229,8 @@ public class App {
             System.out.println("1. Crear matriz de tamaño " + size + " en " + file + " .");
             System.out.println("2. Probar producto de las matrizes de " + file + " Strassen.");
             System.out.println("3. Probar producto de las matrizes de " + file + " Iteratívo.");
-            System.out.println("4. Salir");
+            System.out.println("4. Cambiar el tamaño de la N.");
+            System.out.println("5. Salir");
  
             try {
  
@@ -217,38 +244,61 @@ public class App {
                         System.out.println("Matriz generada de " + size + "x" + size + " en "+ file + " .");
                         break;
                     case 2:
-                        System.out.println("Iniciando las pruebas con " + file);
-                        ArrayList<ArrayList<String>> matrixs = readInputMatrix(file);
-            			Matrix m1 = new Matrix(matrixs.get(0));
-            			Matrix m2 = new Matrix(matrixs.get(1));
-            			Timer.start();
-                        Matrix mr = Operations.StrassenMultiply(m1,m2);
-                        if(size <= 50)
-                        	mr.display();
-                		System.out.println("STOP " + Timer.stop() + "SEG");
-                        break;
+                    	strassenOpt();
                     case 3:
-                        System.out.println("Iniciando las pruebas con " + file);
-                        ArrayList<ArrayList<String>> matrixx = readInputMatrix(file);
-            			Matrix m11 = new Matrix(matrixx.get(0));
-            			Matrix m22 = new Matrix(matrixx.get(1));
-            			Timer.start();
-                        Matrix mrr = Operations.StrassenMultiply(m11,m22);
-                        if(size <= 50)
-                        	mrr.display();
-                		System.out.println("STOP " + Timer.stop() + "SEG");
+                    	iterativeOpt();
                         break;
                     case 4:
+                    	System.out.println("Inserta la nueva N. \n");
+                    	size = sn.nextInt();
+                        break;
+                    case 5:
                         salir = true;
                         break;
                     default:
-                        System.out.println("Solo números entre 1 y 4");
+                        System.out.println("Solo números entre 1 y 5");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Debes insertar un número");
                 sn.next();
             }
         }
+	}
+	
+	/**
+	 * Strassen option in menu.
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws SintaxError
+	 */
+	static void strassenOpt() throws FileNotFoundException, IOException, SintaxError {
+		 System.out.println("Iniciando las pruebas Strassen con " + file);
+         ArrayList<ArrayList<String>> matrixs = readInputMatrix(file);
+			Matrix m1 = new Matrix(matrixs.get(0));
+			Matrix m2 = new Matrix(matrixs.get(1));
+			Timer.start();
+         Matrix mr = Operations.StrassenMultiply(m1,m2);
+         //if(size <= 50)
+         	//mr.display();
+ 		System.out.println("STOP " + Timer.stop() + " SEG");
+	}
+	
+	/**
+	 * Iterative option in menu.
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws SintaxError
+	 */
+	static void iterativeOpt() throws FileNotFoundException, IOException, SintaxError {
+		System.out.println("Iniciando las pruebas Iterativas con " + file);
+        ArrayList<ArrayList<String>> matrixx = readInputMatrix(file);
+		Matrix m11 = new Matrix(matrixx.get(0));
+		Matrix m22 = new Matrix(matrixx.get(1));
+		Timer.start();
+        Matrix mrr = Operations.IterativeMultiply(m11,m22);
+        //if(size <= 50)
+        	//mrr.display();
+		System.out.println("STOP " + Timer.stop() + " SEG");
 	}
 	
 }

@@ -6,11 +6,23 @@ import java.lang.Double;
 
 
 
+/**
+ * Matrix is a class to represent abstract matrix.
+ * @author Troyano
+ * @version 1.0
+ * @date 7 mar. 2018
+ * @see System
+ *
+ */
 public class Matrix {
     int rows = 0;
-	private int cols = 0;
+	int cols = 0;
     ArrayList<ArrayList<Double>> m;
     
+    /**
+     * Constructor
+     * @param matrix
+     */
     public Matrix(ArrayList<String> matrix) {
     	m = createMatrixFromString(matrix);
     	cols = m.get(0).size();
@@ -18,6 +30,10 @@ public class Matrix {
     	squareIt();
     }
     
+    /**
+     * Void Matrix constructor
+     * @param size
+     */
     public Matrix(int size) {
     	cols = size;
     	rows = size;
@@ -30,14 +46,32 @@ public class Matrix {
 		}
     }
     
+    /**
+     * Return position i, j of the Matrix.
+     * @param i
+     * @param j
+     * @return 
+     */
     public Double pos(int i, int j) {
     	return m.get(i).get(j);
     }
+
     
+    /**
+     * Set position i, j of the Matrix.
+     * @param i
+     * @param j
+     * @return
+     */
     public void setPos(int i, int j, Double value) {
     	m.get(i).set(j,value);
     }
     
+    /**
+     * Create Matrix data from string data.
+     * @param matrix
+     * @return
+     */
     public  ArrayList<ArrayList<Double>> createMatrixFromString(ArrayList<String> matrix) {
     	ArrayList<ArrayList<Double>> numberMatrix = new ArrayList<ArrayList<Double>>();
     	for(String line: matrix){
@@ -46,6 +80,11 @@ public class Matrix {
 		return numberMatrix;
     }
     
+    /**
+     * Create array data from string data.
+     * @param line
+     * @return
+     */
     public ArrayList<Double> createArray(String line) {
     	ArrayList<Double> arr = new ArrayList<Double>();
     	
@@ -58,6 +97,9 @@ public class Matrix {
     	return arr;
     }
     
+    /**
+     * Set size of matrix columns equal to rows.
+     */
     void squareIt() {
     	if(!isSquare()) {
     		if(cols > rows) {
@@ -75,6 +117,9 @@ public class Matrix {
     	pot2Matrix();
     }
     
+    /**
+     * Set Matrix size to power of 2 number. 
+     */
     void pot2Matrix() {
     	while(log2(cols) % 1 != 0.0){
     		m.add(emptyRow());
@@ -86,6 +131,10 @@ public class Matrix {
     	}
     }
     
+    /**
+     * Set empty row.
+     * @return
+     */
     public ArrayList<Double> emptyRow() {
     	ArrayList<Double> emptyRow = new ArrayList<Double>();
     	for(int i = 0; i < cols; i++) {
@@ -94,6 +143,10 @@ public class Matrix {
 		return emptyRow;
     }
     
+    /**
+     * Set emty col. 
+     * @param col
+     */
     public void completeCol(int col) {
     	for(int i = cols; i < rows; i++) {
     		m.get(col).add(0.0);
@@ -121,50 +174,17 @@ public class Matrix {
         }
     }
 
-	 public static double log2(double d) {
+	 /**
+	  * Logarithm of base 2 opration.
+	 * @param d
+	 * @return
+	 */
+	public static double log2(double d) {
 	      return Math.log(d)/Math.log(2.0);
 	   }
     
-    // Subtracting 2 matrices
-    public static Matrix subMatrix(Matrix a, Matrix b) {
-        int n = a.rows;
-        Matrix res = new Matrix(n);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                res.setPos(i, j, (a.pos(i, j) - b.pos(i, j)));
-            }
-        }
-        return res;
-    }
     
-    // divides array
-    public static void divideArray(Matrix P, Matrix C, int iB, int jB) 
-    {
-        for(int i1 = 0, i2 = iB; i1 < C.cols; i1++, i2++)
-            for(int j1 = 0, j2 = jB; j1 < C.rows; j1++, j2++)
-                C.setPos(i1, j1, P.pos(i2,j2));
-    }
-
-    // copies
-    public static void copySubArray(Matrix C, Matrix P, int iB, int jB) 
-    {
-        for(int i1 = 0, i2 = iB; i1 < C.cols; i1++, i2++)
-            for(int j1 = 0, j2 = jB; j1 < C.rows; j1++, j2++)
-            	P.setPos(i2, j2, C.pos(i1,j1));
-    }  
-    
- // Adding 2 matrices
-    public static Matrix addMatrix(Matrix a, Matrix b) {
-
-        int n = a.cols;
-        Matrix res = new Matrix(n);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-            	 res.setPos(i, j, (a.pos(i, j) + b.pos(i, j)));
-            }
-        }
-        return res;
-    }
+   
     
 
    

@@ -13,3 +13,11 @@ STOP 640.099SEG
 3. Probar producto de las matrizes de matrix.m Iteratívo.
 4. Salir
 Escribe una de las opciones
+
+
+
+Iniciando las pruebas Strassen con matrix.m
+STOP 587.089 SEG
+Iniciando las pruebas Iterativas con matrix.m
+STOP 845.234 SEG
+1. Crear matriz de tamaño 2000 en matrix.m .
