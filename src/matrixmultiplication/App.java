@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 import exceptions.SintaxError;
+import mod.Modificacion;
 import timer.Timer;
 
 /**
@@ -230,7 +231,8 @@ public class App {
             System.out.println("2. Probar producto de las matrizes de " + file + " Strassen.");
             System.out.println("3. Probar producto de las matrizes de " + file + " Iteratívo.");
             System.out.println("4. Cambiar el tamaño de la N.");
-            System.out.println("5. Salir");
+            System.out.println("5. Modificación contar números array.");
+            System.out.println("6. Salir");
  
             try {
  
@@ -253,6 +255,12 @@ public class App {
                     	size = sn.nextInt();
                         break;
                     case 5:
+                    	int[] p = {1,1,1,1,1,1,1,0,0,0,0,0};
+                    	int val = Modificacion.countZ(p);
+                    	val = Modificacion.countZ(p, 0, p.length);
+                    	System.out.println("Numero de zeros " + val);
+                        break;
+                    case 6:
                         salir = true;
                         break;
                     default:

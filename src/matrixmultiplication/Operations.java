@@ -119,7 +119,7 @@ public class Operations {
         return res;
     }
     /**
-     * Substract two Matrix a and b
+     * Substract two Matrix a and b.
 	  * @param A Matrix a
 	  * @param B Matrix b
 	  * @return a-b
@@ -137,7 +137,7 @@ public class Operations {
     
  // Adding 2 matrices
     /**
-      * Add two matrix a and b 
+      * Add two matrix a and b .
 	  * @param A Matrix a
 	  * @param B Matrix b
 	  * @return a-b
